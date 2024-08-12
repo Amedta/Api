@@ -8,14 +8,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Define the port (either from environment variables or default to 4000)
+const port = process.env.PORT || 4000;
+
 // MySQL connection
 const connection = mysql.createConnection(process.env.DATABASE_URL);
 connection.connect((err) => {
     if (err) {
-        console.log('Error connecting to mysql database =', err);
+        console.log('Error connecting to MySQL database:', err);
         return;
     }
-    console.log('Mysql successfully connected!');
+    console.log('MySQL successfully connected!');
 });
 
 // Register route
@@ -67,7 +70,7 @@ app.post("/api/login", (req, res) => {
     });
 });
 
-// Listen on the specified PORT
+// Start the server
 app.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`);
 });
