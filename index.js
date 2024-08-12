@@ -10,24 +10,19 @@ app.use(cors());
 const port = process.env.PORT || 4000;
 
 // MySQL connection
-const dbUrl = new URL(process.env.DATABASE_URL);
+const dbUrlString = process.env.DATABASE_URL;
+if (!dbUrlString) {
+    console.error('DATABASE_URL environment variable is not set');
+    process.exit(1); // Exit the application if DATABASE_URL is not set
+}
 
-const connection = mysql.createConnection({
-    host: dbUrl.hostname,
-    user: dbUrl.username,
-    password: dbUrl.password,
-    database: dbUrl.pathname.split('/')[1],
-    port: dbUrl.port,
-    ssl: { rejectUnauthorized: true } // Adjust as needed based on your SSL settings
-});
-
-connection.connect((err) => {
-    if (err) {
-        console.log('Error connecting to MySQL:', err);
-    } else {
-        console.log('Connected to MySQL');
-    }
-});
+let dbUrl;
+try {
+    dbUrl = new URL(dbUrlString);
+} catch (err) {
+    console.error('Invalid DATABASE_URL:', err.message);
+    process.exit(1); // Exit the application if DATABASE_URL is invalid
+}
 
 // Register route
 app.post("/api/register", async (req, res) => {
