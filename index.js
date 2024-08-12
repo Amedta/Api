@@ -18,7 +18,9 @@ connection.connect((err) => {
     }
     console.log('MySQL successfully connected!');
 });
-
+app.get("/api/hello", (req, res) => {
+    return res.status(200).json({ message: 'Hello, World!' });
+});
 // Register route
 app.post("/api/register", async (req, res) => {
     const { username, phone, password } = req.body;
