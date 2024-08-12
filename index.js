@@ -1,49 +1,51 @@
+require('dotenv').config(); // Ensure this is at the top
+
 const mysql = require('mysql2');
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const dotenv = require('dotenv');
-
-dotenv.config();
+// Removed bcrypt import, you can add alternative code for password handling if needed
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const port = process.env.PORT || 4000;
+// Default port if not set in environment variables
+const port = process.env.PORT_DB || 4000;
 
 // MySQL connection
-const dbUrlString = process.env.DATABASE_URL;
-let connection;
+const dbConfig = {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: JSON.parse(process.env.DB_SSL) // Parse JSON string to object
+};
 
-try {
-    connection = mysql.createConnection(dbUrlString);
-    connection.connect(err => {
-        if (err) {
-            console.error('Error connecting to MySQL:', err);
-            process.exit(1);
-        }
-        console.log('Connected to MySQL');
-    });
-} catch (err) {
-    console.error('Invalid DATABASE_URL:', err.message);
-    process.exit(1);
-}
+const connection = mysql.createPool(dbConfig);
+
+connection.on('connection', (conn) => {
+    console.log('Connected to MySQL');
+});
+
+connection.on('error', (err) => {
+    console.error('MySQL error:', err);
+});
 
 // Register route
 app.post("/api/register", async (req, res) => {
-    const { username, phone, password } = req.body;  
+    const { username, phone, password } = req.body;
+    if (!username || !phone || !password) {
+        return res.status(400).json({ error: 'Username, phone, and password are required' });
+    }
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const userData = {
-            username,
-            phone,
-            password: hashedPassword 
-        };   
+        // Remove bcrypt usage
+        const userData = { username, phone, password }; // Store plain password or handle it differently
         connection.query('INSERT INTO users SET ?', userData, (err, results) => {
             if (err) {
-                console.error('Error while inserting a user into the database:', err);
-                return res.status(400).json({ error: 'Failed to register user' });
+                console.error('Error inserting user into the database:', err);
+                return res.status(500).json({ error: 'Failed to register user' });
             }
             return res.status(201).json({ message: 'New user successfully created!' });
         });
@@ -54,27 +56,27 @@ app.post("/api/register", async (req, res) => {
 });
 
 // Login route
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
     const { phone, password } = req.body;
     if (!phone || !password) {
-        return res.status(400).send({ error: 'Phone and password are required' });
+        return res.status(400).json({ error: 'Phone and password are required' });
     }
     const query = "SELECT * FROM users WHERE phone = ?";
-    connection.query(query, [phone], async (err, results) => {
+    connection.query(query, [phone], (err, results) => {
         if (err) {
-            console.log('Error while querying the database:', err);
-            return res.status(500).send({ error: 'Server error' });
+            console.error('Error querying the database:', err);
+            return res.status(500).json({ error: 'Server error' });
         }
         if (results.length > 0) {
             const user = results[0];
-            const match = await bcrypt.compare(password, user.password);
-            if (match) {
+            // Compare passwords here or use your own method
+            if (password === user.password) {
                 return res.status(200).json({ message: 'Login successful' });
             } else {
-                return res.status(401).send({ error: 'Invalid phone or password' });
+                return res.status(401).json({ error: 'Invalid phone or password' });
             }
         } else {
-            return res.status(401).send({ error: 'Invalid phone or password' });
+            return res.status(401).json({ error: 'Invalid phone or password' });
         }
     });
 });
