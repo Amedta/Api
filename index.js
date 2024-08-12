@@ -3,10 +3,12 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const url = require('url');
-require('dotenv').config();
+const dotenv = require('dotenv');
 const app = express();
 app.use(express.json());
 app.use(cors());
+dotenv.config();
+
 const port = process.env.PORT || 4000;
 
 // MySQL connection
