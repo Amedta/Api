@@ -3,7 +3,6 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const url = require('url');
-const dbUrl = process.env.DATABASE_URL;
 require('dotenv').config();
 const app = express();
 app.use(express.json());
@@ -11,13 +10,23 @@ app.use(cors());
 const port = process.env.PORT || 4000;
 
 // MySQL connection
-const connection = mysql.createConnection(process.env.DATABASE_URL);
+const dbUrl = new URL(process.env.DATABASE_URL);
+
+const connection = mysql.createConnection({
+    host: dbUrl.hostname,
+    user: dbUrl.username,
+    password: dbUrl.password,
+    database: dbUrl.pathname.split('/')[1],
+    port: dbUrl.port,
+    ssl: { rejectUnauthorized: true } // Adjust as needed based on your SSL settings
+});
+
 connection.connect((err) => {
     if (err) {
-        console.log('Error connecting to MySQL database:', err);
-        return;
+        console.log('Error connecting to MySQL:', err);
+    } else {
+        console.log('Connected to MySQL');
     }
-    console.log('MySQL successfully connected!');
 });
 
 // Register route
