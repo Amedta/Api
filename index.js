@@ -1,31 +1,33 @@
-const express = require('express');
 const mysql = require('mysql2');
+const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const url = require('url');
 const dotenv = require('dotenv');
+
+dotenv.config();
+
 const app = express();
 app.use(express.json());
 app.use(cors());
-dotenv.config();
 
 const port = process.env.PORT || 4000;
 
 // MySQL connection
 const dbUrlString = process.env.DATABASE_URL;
-console.log(dbUrlString);
+let connection;
 
-if (!dbUrlString) {
-    console.error('DATABASE_URL environment variable is not set');
-    process.exit(1); // Exit the application if DATABASE_URL is not set
-}
-
-let dbUrl;
 try {
-    dbUrl = new URL(dbUrlString);
+    connection = mysql.createConnection(dbUrlString);
+    connection.connect(err => {
+        if (err) {
+            console.error('Error connecting to MySQL:', err);
+            process.exit(1);
+        }
+        console.log('Connected to MySQL');
+    });
 } catch (err) {
     console.error('Invalid DATABASE_URL:', err.message);
-    process.exit(1); // Exit the application if DATABASE_URL is invalid
+    process.exit(1);
 }
 
 // Register route
