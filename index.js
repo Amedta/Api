@@ -3,6 +3,8 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const url = require('url');
+const dbUrl = process.env.DATABASE_URL;
+const parsedUrl = url.parse(dbUrl, true);
 require('dotenv').config();
 const app = express();
 app.use(express.json());
