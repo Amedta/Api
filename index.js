@@ -2,7 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 require('dotenv').config()
 
 const app = express();
@@ -66,4 +66,4 @@ app.post("/api/login", (req, res) => {
     });
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 4000);
