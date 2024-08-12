@@ -18,8 +18,8 @@ connection.connect((err) => {
     }
     console.log('MySQL successfully connected!');
 });
-app.get("/api/hello", (req, res) => {
-    return res.status(200).json({ message: 'Hello, World!' });
+app.get("/", (req, res) => {
+    res.send("Welcome to the API!");
 });
 // Register route
 app.post("/api/register", async (req, res) => {
