@@ -2,18 +2,18 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const port = process.env.PORT || 4000;
-require('dotenv').config()
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 // MySQL connection
-const connection = mysql.createConnection(process.env.DATABASE_URL)
+const connection = mysql.createConnection(process.env.DATABASE_URL);
 connection.connect((err) => {
     if (err) {
         console.log('Error connecting to mysql database =', err);
+        return;
     }
     console.log('Mysql successfully connected!');
 });
@@ -28,7 +28,7 @@ app.post("/api/register", async (req, res) => {
             phone,
             password: hashedPassword 
         };   
-        connection.query('INSERT INTO users SET ?', userData, (err, results, fields) => {
+        connection.query('INSERT INTO users SET ?', userData, (err, results) => {
             if (err) {
                 console.error('Error while inserting a user into the database:', err);
                 return res.status(400).json({ error: 'Failed to register user' });
@@ -40,6 +40,7 @@ app.post("/api/register", async (req, res) => {
         return res.status(500).json({ error: 'Server error' });
     }
 });
+
 // Login route
 app.post("/api/login", (req, res) => {
     const { phone, password } = req.body;
@@ -65,6 +66,8 @@ app.post("/api/login", (req, res) => {
         }
     });
 });
-app.listen(process.env.PORT, () => {
-    console.log(`Server is listening at http://localhost:${process.env.PORT}`);
+
+// Listen on the specified PORT
+app.listen(port, () => {
+    console.log(`Server is listening at http://localhost:${port}`);
 });
