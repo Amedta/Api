@@ -4,6 +4,8 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const port = process.env.PORT || 3000;
 require('dotenv').config()
+const sslConfig = process.env.DB_SSL ? JSON.parse(process.env.DB_SSL) : {};
+
 
 const app = express();
 app.use(express.json());
@@ -16,7 +18,7 @@ const connection = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: JSON.parse(process.env.DB_SSL) // Make sure to parse the SSL configuration
+    ssl: sslConfig
 });
 
 connection.connect((err) => {
