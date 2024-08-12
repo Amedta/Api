@@ -13,6 +13,8 @@ const port = process.env.PORT || 4000;
 
 // MySQL connection
 const dbUrlString = process.env.DATABASE_URL;
+console.log(dbUrlString);
+
 if (!dbUrlString) {
     console.error('DATABASE_URL environment variable is not set');
     process.exit(1); // Exit the application if DATABASE_URL is not set
