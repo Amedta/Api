@@ -91,6 +91,46 @@ app.get("/api/display", (req, res) => {
         }
     });
 });
+app.put("/api/users/:id", async (req, res) => {
+    const { id } = req.params;
+    const { username, phone } = req.body;
+
+    if (!username && !phone) {
+        return res.status(400).json({ error: 'At least one field is required to update' });
+    }
+    let updatedFields = {};
+
+    if (username) updatedFields.username = username;
+    if (phone) updatedFields.phone = phone;
+    connection.query('UPDATE users SET ? WHERE id = ?', [updatedFields, id], (err, results) => {
+        if (err) {
+            console.error('Error while updating the user in the database:', err);
+            return res.status(500).json({ error: 'Failed to update user' });
+        }
+        if (results.affectedRows > 0) {
+            return res.status(200).json({ message: 'User successfully updated!' });
+        } else {
+            return res.status(404).json({ message: 'User not found' });
+        }
+    });
+});
+
+// Delete user 
+app.delete("/api/users/:id", (req, res) => {
+    const { id } = req.params;
+    connection.query('DELETE FROM users WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            console.error('Error while deleting the user from the database:', err);
+            return res.status(500).json({ error: 'Failed to delete user' });
+        }
+
+        if (results.affectedRows > 0) {
+            return res.status(200).json({ message: 'User successfully deleted!' });
+        } else {
+            return res.status(404).json({ message: 'User not found' });
+        }
+    });
+});
 
 // Start the server
 app.listen(port, () => {
