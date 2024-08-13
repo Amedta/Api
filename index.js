@@ -91,7 +91,7 @@ app.get("/api/display", (req, res) => {
         }
     });
 });
-app.put("/api/users/:id", async (req, res) => {
+app.put("/api/update/:id", async (req, res) => {
     const { id } = req.params;
     const { username, phone } = req.body;
 
@@ -116,7 +116,7 @@ app.put("/api/users/:id", async (req, res) => {
 });
 
 // Delete user 
-app.delete("/api/users/:id", (req, res) => {
+app.delete("/api/delete/:id", (req, res) => {
     const { id } = req.params;
     connection.query('DELETE FROM users WHERE id = ?', [id], (err, results) => {
         if (err) {
