@@ -134,7 +134,6 @@ app.delete("/api/delete/:id", (req, res) => {
 // display dealer
 app.get("/api/dealer", (req, res) => {
     const query = "SELECT name FROM dealer";
-
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error while fetching dealer from the database:', err);
@@ -148,6 +147,64 @@ app.get("/api/dealer", (req, res) => {
         }
     });
 });
+// Update dealer
+app.put("/api/dealer/update/:id", (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: 'Dealer name is required to update' });
+    }
+
+    const query = "UPDATE dealer SET name = ? WHERE id = ?";
+    connection.query(query, [name, id], (err, results) => {
+        if (err) {
+            console.error('Error while updating the dealer in the database:', err);
+            return res.status(500).json({ error: 'Failed to update dealer' });
+        }
+        if (results.affectedRows > 0) {
+            return res.status(200).json({ message: 'Dealer successfully updated!' });
+        } else {
+            return res.status(404).json({ message: 'Dealer not found' });
+        }
+    });
+});
+// delete dealer 
+app.delete("/api/dealer/delete/:id", (req, res) => {
+    const { id } = req.params;
+
+    const query = "DELETE FROM dealer WHERE id = ?";
+    connection.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error while deleting the dealer from the database:', err);
+            return res.status(500).json({ error: 'Failed to delete dealer' });
+        }
+
+        if (results.affectedRows > 0) {
+            return res.status(200).json({ message: 'Dealer successfully deleted!' });
+        } else {
+            return res.status(404).json({ message: 'Dealer not found' });
+        }
+    });
+});
+// insert sealer
+app.post("/api/dealer", (req, res) => {
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: 'Dealer name is required' });
+    }
+
+    const query = "INSERT INTO dealer (name) VALUES (?)";
+    connection.query(query, [name], (err, results) => {
+        if (err) {
+            console.error('Error while inserting the dealer into the database:', err);
+            return res.status(500).json({ error: 'Failed to add dealer' });
+        }
+        return res.status(201).json({ message: 'New dealer successfully added!' });
+    });
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
