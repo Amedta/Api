@@ -188,7 +188,7 @@ app.delete("/api/dealer/delete/:id", (req, res) => {
     });
 });
 // insert sealer
-app.post("/api/dealer", (req, res) => {
+app.post("/api/dealer/insert", (req, res) => {
     const { name } = req.body;
 
     if (!name) {
