@@ -131,7 +131,23 @@ app.delete("/api/delete/:id", (req, res) => {
         }
     });
 });
+// display dealer
+app.get("/api/dealer", (req, res) => {
+    const query = "SELECT name FROM dealer";
 
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error('Error while fetching dealer from the database:', err);
+            return res.status(500).json({ error: 'Server error' });
+        }
+
+        if (results.length > 0) {
+            return res.status(200).json(results);
+        } else {
+            return res.status(404).json({ message: 'No dealer found' });
+        }
+    });
+});
 // Start the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
