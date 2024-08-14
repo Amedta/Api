@@ -76,7 +76,7 @@ app.post("/api/login", (req, res) => {
     });
 });
 app.get("/api/display", (req, res) => {
-    const query = "SELECT username, phone FROM users";
+    const query = "SELECT id , username, phone FROM users";
 
     connection.query(query, (err, results) => {
         if (err) {
