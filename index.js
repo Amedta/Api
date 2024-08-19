@@ -171,10 +171,10 @@ app.put("/api/dealer/update/:id", (req, res) => {
 });
 // delete dealer 
 app.delete("/api/dealer/delete/:id", (req, res) => {
-    const { name } = req.params;
+    const { id } = req.params;
 
     const query = "DELETE FROM dealer WHERE id = ?";
-    connection.query(query, [name], (err, results) => {
+    connection.query(query, [id], (err, results) => {
         if (err) {
             console.error('Error while deleting the dealer from the database:', err);
             return res.status(500).json({ error: 'Failed to delete dealer' });
