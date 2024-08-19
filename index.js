@@ -133,7 +133,7 @@ app.delete("/api/delete/:id", (req, res) => {
 });
 // display dealer
 app.get("/api/dealer", (req, res) => {
-    const query = "SELECT name FROM dealer";
+    const query = "SELECT * FROM dealer";
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error while fetching dealer from the database:', err);
@@ -170,10 +170,10 @@ app.put("/api/dealer/update/:id", (req, res) => {
     });
 });
 // delete dealer 
-app.delete("/api/dealer/delete/:name", (req, res) => {
+app.delete("/api/dealer/delete/:id", (req, res) => {
     const { name } = req.params;
 
-    const query = "DELETE FROM dealer WHERE name = ?";
+    const query = "DELETE FROM dealer WHERE id = ?";
     connection.query(query, [name], (err, results) => {
         if (err) {
             console.error('Error while deleting the dealer from the database:', err);
