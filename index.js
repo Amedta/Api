@@ -133,7 +133,7 @@ app.delete("/api/delete/:id", (req, res) => {
 });
 // display dealer
 app.get("/api/dealer", (req, res) => {
-    const query = "SELECT name FROM dealer";
+    const query = "SELECT * FROM dealer";
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error while fetching dealer from the database:', err);
