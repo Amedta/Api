@@ -170,7 +170,7 @@ app.put("/api/dealer/update/:id", (req, res) => {
     });
 });
 // delete dealer 
-app.delete("/api/dealer/delete/:id", (req, res) => {
+app.delete("/api/dealer/delete/:name", (req, res) => {
     const { name } = req.params;
 
     const query = "DELETE FROM dealer WHERE name = ?";
