@@ -75,10 +75,11 @@ app.post("/api/login", (req, res) => {
         }
     });
 });
-app.get("/api/display/id", (req, res) => {
-    const query = "SELECT * FROM users WHERE id";
+app.get("/api/display/:id", (req, res) => {
+    const { id } = req.params;
+    const query = "SELECT * FROM users WHERE id = ?";
 
-    connection.query(query, (err, results) => {
+    connection.query(query, [id], (err, results) => {
         if (err) {
             console.error('Error while fetching users from the database:', err);
             return res.status(500).json({ error: 'Server error' });
@@ -91,6 +92,7 @@ app.get("/api/display/id", (req, res) => {
         }
     });
 });
+
 app.get("/api/display", (req, res) => {
     const query = "SELECT * FROM users ";
 
