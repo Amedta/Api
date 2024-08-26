@@ -92,7 +92,7 @@ app.get("/api/display/id", (req, res) => {
     });
 });
 app.get("/api/display", (req, res) => {
-    const query = "SELECT * FROM users WHERE id";
+    const query = "SELECT * FROM users ";
 
     connection.query(query, (err, results) => {
         if (err) {
